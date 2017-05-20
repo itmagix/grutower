@@ -1,0 +1,2 @@
+* */1 * * * salt '*' state.apply profiles,repos,system,minion 1>&2
+* */1 * * * salt gru state.apply master 1>&2

@@ -1,0 +1,22 @@
+# ~/.profile: executed by Bourne-compatible login shells.
+
+if [ "$BASH" ]; then
+  if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+  fi
+fi
+
+mesg n
+
+echo
+echo "*****************************************************"
+echo "* The following aliasses are active for this system *"
+echo "*****************************************************"
+echo "* sca -> sudo salt on al minions including Gru      *"
+echo "* minions -> salt only on minions                   *"
+echo "* sk -> triggers sudo salt-key                *"
+echo "*****************************************************"
+echo
+alias sca="sudo salt '*' cmd.run"
+alias minions="sudo salt --verbose -L 'minion1,minion2,minion3,minion4,minion5' cmd.run"
+alias sk="sudo /usr/bin/salt-key"

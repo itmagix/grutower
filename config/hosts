@@ -1,0 +1,13 @@
+127.0.0.1	localhost
+::1		localhost ip6-localhost ip6-loopback
+ff02::1		ip6-allnodes
+ff02::2		ip6-allrouters
+
+127.0.1.1	raspberry
+
+192.168.3.40    gru
+192.168.3.41    minion1
+192.168.3.42    minion2
+192.168.3.43    minion3
+192.168.3.44    minion4
+192.168.3.45    minion5

@@ -1,0 +1,31 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+
+# Note: PS1 and umask are already set in /etc/profile. You should not
+# need this unless you want different defaults for root.
+# PS1='${debian_chroot:+($debian_chroot)}\h:\w\$ '
+# umask 022
+
+# You may uncomment the following lines if you want `ls' to be colorized:
+# export LS_OPTIONS='--color=auto'
+# eval "`dircolors`"
+# alias ls='ls $LS_OPTIONS'
+# alias ll='ls $LS_OPTIONS -l'
+# alias l='ls $LS_OPTIONS -lA'
+#
+# Some more alias to avoid making mistakes:
+# alias rm='rm -i'
+# alias cp='cp -i'
+# alias mv='mv -i'
+
+echo
+echo "*****************************************************"
+echo "* The following aliasses are active for this system *"
+echo "*****************************************************"
+echo "* sca -> sudo salt on al minions including Gru      *"
+echo "* minions -> salt only on minions                   *"
+echo "* sk -> triggers sudo salt-key                      *"
+echo "*****************************************************"
+echo
+alias sca="sudo salt '*' cmd.run"
+alias minions="sudo salt --verbose -L 'minion1,minion2,minion3,minion4,minion5' cmd.run"
+alias sk="sudo /usr/bin/salt-key"
