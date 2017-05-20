@@ -11,3 +11,7 @@ Thumbs.db
 # Disk images folder #
 ######################
 images/
+
+# Prevent the copy of the authorized_keys file for more security #
+##################################################################
+authorized_keys
