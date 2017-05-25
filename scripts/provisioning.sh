@@ -1,7 +1,7 @@
 #!/bin/bash
 PASSWORD=`openssl rand -hex 12`
 MINIONS="minion1,minion2,minion3,minion4,minion5"
-SSHMINIONS="minion1 minion2 minion3 minion4 minion5"
+SSHMINIONS="192.168.3.41 192.168.3.42 192.168.3.43 192.168.3.44 192.168.3.45"
 CONFIGS="profiles,repos,system,minion"
 KUBETOKEN=`sudo kubeadm token list | tail -n1 | awk '{print $1}'`
 
