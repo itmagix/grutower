@@ -3,6 +3,7 @@ PASSWORD=`openssl rand -hex 12`
 MINIONS="minion1,minion2,minion3,minion4,minion5"
 SSHMINIONS="minion1 minion2 minion3 minion4 minion5"
 CONFIGS="profiles,repos,system,minion"
+KUBETOKEN=`sudo kubeadm token list | tail -n1 | awk '{print $1}'`
 
 echo "Step 1 - Check for Root rights"
 if [ $EUID -ne 0 ]; then
@@ -84,6 +85,52 @@ echo "Step 14 - Installing Kubernetes on the Minions"
 salt -L $MINIONS cmd.run "curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -"
 salt -L $MINIONS cmd.run "apt-get update && apt-get install -y kubeadm"
 echo ""
-echo "Provisioning ready"
+
+echo "Step 15 - Initiating Kubernetes cluster on Gru"
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+sudo cp /etc/kubernetes/admin.conf $HOME/
+sudo chown $(id -u):$(id -g) $HOME/admin.conf
+export KUBECONFIG=$HOME/admin.conf
+echo "KUBECONFIG=$HOME/admin.conf >> ~/.profile
+echo ""
+
+echo "Step 16 - Let the Minion join the cluster"
+minions "kubeadm join --token $KUBETOKEN gru:6443"
+
+echo "Step 17 - Sleep for 20 seconds"
+sleep 10
+echo "10 Seconds remaining"
+sleep 5
+echo "5 Seconds remaining"
+sleep 1
+echo "4 Seconds remaining"
+sleep 1
+echo "3 Seconds remaining"
+sleep 1
+echo "2 Seconds remaining"
+sleep 1
+echo "1 Second remaining"
+sleep 1
+echo ""
+echo "Done sleeping let's see if there was some magic"
+echo ""
+
+echo "Step 18 - See if the Minions joined the Gru Tower"
+kubectl get nodes 
+echo ""
+echo "It's OK if the status is Not Ready, they will be later"
+echo ""
+
+echo "Step 19 - Install Flannel RBAC Profile"
+kubeadm apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel-rbac.yml
+
+echo "Step 20 - Install Flannel as pod network"
+curl -sSL https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml | sed "s/amd64/arm/g" | kubectl create -f -
+
+echo "Step 21 - Change IPTABLES Rules on the Minions"
+minions "iptables -A FORWARD -i cni0 -j ACCEPT"
+minions "iptables -A FORWARD -o cni0 -j ACCEPT"
+
+echo 'Provisioning ready - It can take a couple of minutes to settle down, just check the command: "kubectl get po --all-namespaces" a few times'
 
 exit 0
