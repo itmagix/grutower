@@ -3,7 +3,6 @@ PASSWORD=`openssl rand -hex 12`
 MINIONS="minion1,minion2,minion3,minion4,minion5"
 SSHMINIONS="192.168.3.41 192.168.3.42 192.168.3.43 192.168.3.44 192.168.3.45"
 CONFIGS="profiles,repos,system,minion"
-KUBETOKEN=`sudo kubeadm token list | tail -n1 | awk '{print $1}'`
 
 echo "Step 1 - Check for Root rights"
 if [ $EUID -ne 0 ]; then
@@ -95,6 +94,7 @@ echo "KUBECONFIG=$HOME/admin.conf >> ~/.profile
 echo ""
 
 echo "Step 16 - Let the Minion join the cluster"
+KUBETOKEN=`sudo kubeadm token list | tail -n1 | awk '{print $1}'`
 minions "kubeadm join --token $KUBETOKEN gru:6443"
 
 echo "Step 17 - Sleep for 20 seconds"
