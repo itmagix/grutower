@@ -18,17 +18,17 @@ fi
 echo ""
 
 echo "Step 2 - Copy Salt Repository to the minions"
-for i in $SSHMININOS ; do scp ~/repos/saltstack.list pirate@$i ; done
-for i in $SSHMINIONS ; do ssh pirate@$i sudo mv saltstack.list /etc/apt/sources.list.d/ ; done
+for i in $(echo $SSHMINIONS) ; do scp /home/pirate/repos/saltstack.list pirate@$i:~ ; done
+for i in $(echo $SSHMINIONS) ; do ssh pirate@$i sudo mv saltstack.list /etc/apt/sources.list.d/ ; done
 
 echo "Step 3 - Install Salt Minions"
-for i in $SSHMINIONS ; do ssh pirate@$i sudo apt-get update && sudo apt-get install -y salt-minion ; done
+for i in $(echo $SSHMINIONS) ; do ssh pirate@$i "wget -O - https://repo.saltstack.com/apt/debian/8/armhf/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add - && sudo apt-get update && sudo apt-get install -y salt-minion" ; done
 
 echo "Step 4 - Copy initial Salt config file"
-for i in $SSHMINIONS ; do scp ~/configs/minion pirate@$i:/etc/salt/ ; done
+for i in $(echo $SSHMINIONS) ; do scp ~/configs/minion pirate@$i:/etc/salt/ ; done
 
 echo "Step 5 - Restart Salt minion process"
-for i in $SSHMINIONS ; do ssh pirate@$i systemctl restart salt-minion ; done
+for i in $(echo $SSHMINIONS) ; do ssh pirate@$i systemctl restart salt-minion ; done
 
 echo "Step 6 - Add all Salt Minion keys to the Master"
 salt-key -y -A
