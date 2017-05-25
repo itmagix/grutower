@@ -19,7 +19,7 @@ fi
 echo ""
 
 echo "Step 2 - Copy Salt Repository to the minions"
-for i in $SSHMININOS ; do scp ~/repos/saltstack.list pirate$i ; done
+for i in $SSHMININOS ; do scp ~/repos/saltstack.list pirate@$i ; done
 for i in $SSHMINIONS ; do ssh pirate@$i sudo mv saltstack.list /etc/apt/sources.list.d/ ; done
 
 echo "Step 3 - Install Salt Minions"
