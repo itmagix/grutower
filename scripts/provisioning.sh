@@ -41,7 +41,7 @@ echo ""
 
 echo "Step 8 - Change Pirate password"
 salt -L $MINIONS cmd.run "echo pirate:$PASSWORD | chpasswd"
-echo "changed Password to $PASSWORD"
+echo echo pirate:$PASSWORD | chpasswd
 echo ""
 
 echo "Step 9 - Set timezone to Europe/Amsterdam"
@@ -132,5 +132,6 @@ minions "iptables -A FORWARD -i cni0 -j ACCEPT"
 minions "iptables -A FORWARD -o cni0 -j ACCEPT"
 
 echo 'Provisioning ready - It can take a couple of minutes to settle down, just check the command: "kubectl get po --all-namespaces" a few times'
-
+echo "The default password for user pirate changed on Gru and the Minions to $PASSWORD, write this down"
+echo ""
 exit 0
