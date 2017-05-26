@@ -1,6 +1,0 @@
-sudo su -
-wget -O - https://repo.saltstack.com/apt/debian/8/armhf/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add -
-echo "deb http://repo.saltstack.com/apt/debian/8/armhf/latest jessie main" > /etc/apt/sources.list.d/saltstack.list
-apt-get update && apt-get install -y salt-minion
-vi /etc/salt/minion
-systemctl restart salt-minion
