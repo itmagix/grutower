@@ -17,7 +17,7 @@ else
 fi
 
 echo "Step 2 - Copy Salt Repository to the minions"
-for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" scp /home/pirate/repos/saltstack.list pirate@$i:~ ; done
+for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" scp -o "StrictHostKeyChecking no" /home/pirate/repos/saltstack.list pirate@$i:~ ; done
 for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i sudo mv saltstack.list /etc/apt/sources.list.d/ ; done
 echo ""
 
