@@ -150,8 +150,8 @@ echo "Step 21 - Install Flannel as pod network"
 curl -sSL https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml | sed "s/amd64/arm/g" | kubectl create -f -
 
 echo "Step 22 - Change IPTABLES Rules on the Minions"
-minions "iptables -A FORWARD -i cni0 -j ACCEPT"
-minions "iptables -A FORWARD -o cni0 -j ACCEPT"
+salt -L $MINIONS cmd.run  "iptables -A FORWARD -i cni0 -j ACCEPT"
+salt -L $MINIONS cmd.run  "iptables -A FORWARD -o cni0 -j ACCEPT"
 
 echo 'Provisioning ready - It can take a couple of minutes to settle down, just check the command: "kubectl get po --all-namespaces" a few times'
 echo "The default password for user pirate changed on Gru and the Minions to $PASSWORD, write this down!"
