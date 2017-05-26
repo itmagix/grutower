@@ -137,13 +137,14 @@ echo "Done sleeping let's see if there was some magic"
 echo ""
 
 echo "Step 19 - See if the Minions joined the Gru Tower"
+KUBECONFIG=$HOME/admin.conf
 kubectl get nodes 
 echo ""
 echo "It's OK if the status is Not Ready, they will be later"
 echo ""
 
 echo "Step 20 - Install Flannel RBAC Profile"
-kubeadm apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel-rbac.yml
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel-rbac.yml
 
 echo "Step 21 - Install Flannel as pod network"
 curl -sSL https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml | sed "s/amd64/arm/g" | kubectl create -f -
@@ -153,6 +154,6 @@ minions "iptables -A FORWARD -i cni0 -j ACCEPT"
 minions "iptables -A FORWARD -o cni0 -j ACCEPT"
 
 echo 'Provisioning ready - It can take a couple of minutes to settle down, just check the command: "kubectl get po --all-namespaces" a few times'
-echo "The default password for user pirate changed on Gru and the Minions to $PASSWORD, write this down"
+echo "The default password for user pirate changed on Gru and the Minions to $PASSWORD, write this down!"
 echo ""
 exit 0
