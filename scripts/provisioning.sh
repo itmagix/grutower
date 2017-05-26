@@ -116,7 +116,7 @@ echo ""
 
 echo "Step 17 - Let the Minion join the cluster"
 KUBETOKEN=`sudo kubeadm token list | tail -n1 | awk '{print $1}'`
-salt -L $MINIONS "kubeadm join --token $KUBETOKEN gru:6443"
+salt -L $MINIONS cmd.run "kubeadm join --token $KUBETOKEN gru:6443"
 
 echo "Step 18 - Sleep for 20 seconds"
 sleep 10
