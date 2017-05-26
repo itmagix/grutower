@@ -62,7 +62,7 @@ echo ""
 
 echo "Step 9 - Change Pirate password"
 salt -L $MINIONS cmd.run "echo pirate:$PASSWORD | chpasswd"
-echo echo pirate:$PASSWORD | chpasswd
+echo pirate:$PASSWORD | chpasswd
 echo ""
 
 echo "Step 10 - Set timezone to Europe/Amsterdam"
