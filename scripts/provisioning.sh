@@ -107,17 +107,16 @@ salt -L $MINIONS cmd.run "curl -s https://packages.cloud.google.com/apt/doc/apt-
 salt -L $MINIONS cmd.run "apt-get update && apt-get install -y kubeadm"
 echo ""
 
-echo "Step 16 - Initiating Kubernetes cluster on Gru"
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16
-sudo cp /etc/kubernetes/admin.conf $HOME/
-sudo chown $(id -u):$(id -g) $HOME/admin.conf
-export KUBECONFIG=$HOME/admin.conf
-echo "KUBECONFIG=$HOME/admin.conf >> ~/.profile
+#echo "Step 16 - Initiating Kubernetes cluster on Gru"
+kubeadm init --pod-network-cidr=10.244.0.0/16
+cp /etc/kubernetes/admin.conf /home/pirate/
+sudo chown $(id -u pirate):$(id -g pirate) /home/pirate/admin.conf
+echo "KUBECONFIG=$HOME/admin.conf >> ~/.profile"
 echo ""
 
 echo "Step 17 - Let the Minion join the cluster"
 KUBETOKEN=`sudo kubeadm token list | tail -n1 | awk '{print $1}'`
-minions "kubeadm join --token $KUBETOKEN gru:6443"
+salt -L $MINIONS "kubeadm join --token $KUBETOKEN gru:6443"
 
 echo "Step 18 - Sleep for 20 seconds"
 sleep 10
