@@ -153,7 +153,7 @@ echo ""
 # maikel salt -L $MINIONS cmd.run  "iptables -A FORWARD -i cni0 -j ACCEPT"
 # maikel salt -L $MINIONS cmd.run  "iptables -A FORWARD -o cni0 -j ACCEPT"
 
-echo 'Provisioning ready - It can take a couple of minutes to settle down, just check the command: "kubectl get po --all-namespaces" a few times'
+# maikel echo 'Provisioning ready - It can take a couple of minutes to settle down, just check the command: "kubectl get po --all-namespaces" a few times'
 echo "The default password for user pirate changed on Gru and the Minions to $PASSWORD, write this down!"
 echo ""
 exit 0
