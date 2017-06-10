@@ -17,7 +17,8 @@ else
 fi
 
 echo "Step 2 - Copy Salt Repository to the minions"
-for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh -o "StrictHostKeyChecking no" pirate@$i sudo cp ../gru_req/repos/saltstack.list /etc/apt/sources.list.d/ ; done
+for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" scp -o "StrictHostKeyChecking no" ../gru_req/repos/saltstack.list pirate@$i:~ ; done
+for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i sudo mv saltstack.list /etc/apt/sources.list.d/ ; done
 echo ""
 
 echo "Step 3 - Install Salt Minions"
@@ -25,7 +26,8 @@ for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i "wget -O - 
 echo ""
 
 echo "Step 4 - Copy initial Salt config file"
-for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i sudo cp ../gru_req/configs/miniont /etc/salt/ ; done
+for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" scp ../gru_req/configs/minion pirate@$i:~ ; done
+for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i sudo mv minion /etc/salt/ ; done
 echo ""
 
 echo "Step 5 - Restart Salt minion process"
@@ -105,51 +107,51 @@ salt -L $MINIONS cmd.run "curl -s https://packages.cloud.google.com/apt/doc/apt-
 salt -L $MINIONS cmd.run "apt-get update && apt-get install -y kubeadm"
 echo ""
 
-#echo "Step 16 - Initiating Kubernetes cluster on Gru"
-kubeadm init --pod-network-cidr=10.244.0.0/16
-cp /etc/kubernetes/admin.conf /home/pirate/
-sudo chown $(id -u pirate):$(id -g pirate) /home/pirate/admin.conf
-echo "KUBECONFIG=$HOME/admin.conf >> ~/.profile"
-echo ""
+# maikel echo "Step 16 - Initiating Kubernetes cluster on Gru"
+# maikel kubeadm init --pod-network-cidr=10.244.0.0/16
+# maikel cp /etc/kubernetes/admin.conf /home/pirate/
+# maikel sudo chown $(id -u pirate):$(id -g pirate) /home/pirate/admin.conf
+# maikel echo "KUBECONFIG=$HOME/admin.conf >> ~/.profile"
+# maikel echo ""
 
-echo "Step 17 - Let the Minion join the cluster"
-KUBETOKEN=`sudo kubeadm token list | tail -n1 | awk '{print $1}'`
-salt -L $MINIONS cmd.run "kubeadm join --token $KUBETOKEN gru:6443"
+# maikel echo "Step 17 - Let the Minion join the cluster"
+# maikel KUBETOKEN=`sudo kubeadm token list | tail -n1 | awk '{print $1}'`
+# maikel salt -L $MINIONS cmd.run "kubeadm join --token $KUBETOKEN gru:6443"
 
-echo "Step 18 - Sleep for 20 seconds"
-sleep 10
-echo "10 Seconds remaining"
-sleep 5
-echo "5 Seconds remaining"
-sleep 1
-echo "4 Seconds remaining"
-sleep 1
-echo "3 Seconds remaining"
-sleep 1
-echo "2 Seconds remaining"
-sleep 1
-echo "1 Second remaining"
-sleep 1
-echo ""
-echo "Done sleeping let's see if there was some magic"
-echo ""
+# maikel echo "Step 18 - Sleep for 20 seconds"
+# maikel sleep 10
+# maikel echo "10 Seconds remaining"
+# maikel sleep 5
+# maikel echo "5 Seconds remaining"
+# maikel sleep 1
+# maikel echo "4 Seconds remaining"
+# maikel sleep 1
+# maikel echo "3 Seconds remaining"
+# maikel sleep 1
+# maikel echo "2 Seconds remaining"
+# maikel sleep 1
+# maikel echo "1 Second remaining"
+# maikel sleep 1
+# maikel echo ""
+# maikel echo "Done sleeping let's see if there was some magic"
+# maikel echo ""
 
-echo "Step 19 - See if the Minions joined the Gru Tower"
-KUBECONFIG=$HOME/admin.conf
-kubectl get nodes 
-echo ""
-echo "It's OK if the status is Not Ready, they will be later"
-echo ""
+# maikel echo "Step 19 - See if the Minions joined the Gru Tower"
+# maikel KUBECONFIG=$HOME/admin.conf
+# maikel kubectl get nodes 
+# maikel echo ""
+# maikel echo "It's OK if the status is Not Ready, they will be later"
+# maikel echo ""
 
-echo "Step 20 - Install Flannel RBAC Profile"
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel-rbac.yml
+# maikel echo "Step 20 - Install Flannel RBAC Profile"
+# maikel kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel-rbac.yml
 
-echo "Step 21 - Install Flannel as pod network"
-curl -sSL https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml | sed "s/amd64/arm/g" | kubectl create -f -
+# maikel echo "Step 21 - Install Flannel as pod network"
+# maikel curl -sSL https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml | sed "s/amd64/arm/g" | kubectl create -f -
 
-echo "Step 22 - Change IPTABLES Rules on the Minions"
-salt -L $MINIONS cmd.run  "iptables -A FORWARD -i cni0 -j ACCEPT"
-salt -L $MINIONS cmd.run  "iptables -A FORWARD -o cni0 -j ACCEPT"
+# maikel echo "Step 22 - Change IPTABLES Rules on the Minions"
+# maikel salt -L $MINIONS cmd.run  "iptables -A FORWARD -i cni0 -j ACCEPT"
+# maikel salt -L $MINIONS cmd.run  "iptables -A FORWARD -o cni0 -j ACCEPT"
 
 echo 'Provisioning ready - It can take a couple of minutes to settle down, just check the command: "kubectl get po --all-namespaces" a few times'
 echo "The default password for user pirate changed on Gru and the Minions to $PASSWORD, write this down!"
