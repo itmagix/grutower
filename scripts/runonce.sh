@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -f /tmp/.provisioningdone ] ; then
-echo "Provisioning already done, continuing boot"
+echo "Provisioning already done, continuing normal login"
 exit
 fi
 
@@ -91,7 +91,7 @@ echo '────█════▀█████▀───▀████�
 echo '────█═════════════════════════█'
 echo '────█═════════════════════════█      _____________________________________________________________________________________'
 echo '────█═══════█▀█▀█▀█▀█▀█═══════█     / See you in about.... an hour or so, depends on your internet connection and such.   \'
-echo '────█═══════▀▄───────▄▀═══════█    / Now we gonna wait for about 30 seconds to make sure all the Minion nodes are booted.  \'
+echo '────█═══════▀▄───────▄▀═══════█    / Ow.... And do not judge me, I was born to be AWESOME! Not Perfect. :)                 \'
 echo '───▐▓▓▌═══════▀▄█▄█▄▀═══════▐▓▓▌   \ ______________________________________________________________________________________/'
 echo '───▐▐▓▓▌▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▐▓▓▌' 
 echo '───█══▐▓▄▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▄▓▌══█'
@@ -108,14 +108,22 @@ echo '─────────▐▓▓▓▓▓▓▌▐▓▓▓▓▓▓�
 echo '──────────▐▓▓▓▓▌──▐▓▓▓▓▌'
 echo '─────────▄████▀────▀████▄'
 echo '─────────▀▀▀▀────────▀▀▀▀'
-sleep 30
+sleep 5
+echo "Let's..."
+echo ""
+sleep 1
+echo "get...."
+echo ""
+sleep 1
+echo "ready!!!"
+echo ""
 
 # Getting sources
-git clone -b runonce_script --single-branch https://github.com/itmagix/grutower.git /home/pirate/
+git clone -b runonce_script --single-branch https://github.com/itmagix/grutower.git /home/pirate/grutower
 
 # Running provisioning script
 cd /home/pirate/grutower
-./scripts/provisioning.sh
+sudo ./scripts/provisioning.sh
 
 # Set already run file
 touch /tmp/.provisioningdone
