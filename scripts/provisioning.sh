@@ -17,7 +17,7 @@ else
 fi
 
 echo "Step 2 - Copy Salt Repository to the minions"
-for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" scp -o "StrictHostKeyChecking no" ../gru_req/repos/saltstack.list pirate@$i:~ ; done
+for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" scp -o "StrictHostKeyChecking no" /home/pirate/grutower/gru_req/repos/saltstack.list pirate@$i:~ ; done
 for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i sudo mv saltstack.list /etc/apt/sources.list.d/ ; done
 echo ""
 
@@ -26,7 +26,7 @@ for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i "wget -O - 
 echo ""
 
 echo "Step 4 - Copy initial Salt config file"
-for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" scp ../gru_req/configs/minion pirate@$i:~ ; done
+for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" scp /home/pirate/grutower/gru_req/configs/minion pirate@$i:~ ; done
 for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i sudo mv minion /etc/salt/ ; done
 echo ""
 
