@@ -37,7 +37,7 @@ for i in $(echo $SSHLASTMINION) ; do sshpass -p "hypriot" ssh pirate@$i sudo mv 
 echo ""
 
 echo "Step 5 - Restart Salt minion process"
-for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i sudo systemctl restart salt-minion & ; done
+for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i sudo systemctl restart salt-minion & done
 for i in $(echo $SSHLASTMINION) ; do sshpass -p "hypriot" ssh pirate@$i sudo systemctl restart salt-minion ; done
 echo ""
 
