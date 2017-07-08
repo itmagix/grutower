@@ -78,7 +78,7 @@ salt -L $MINIONS cmd.run "timedatectl"
 echo ""
 
 echo "Step 11 - Updating Minions"
-salt -L $MINIONS cmd.run "apt-get update && apt-get -y upgrade"
+salt -L $MINIONS cmd.run 'apt-get update && apt-get -y -o Dpkg::Options::="--force-confold" upgrade'
 echo ""
 
 echo "Step 12 - Reboot Minions"
@@ -111,8 +111,11 @@ echo ""
 
 echo "Step 15 - Installing Kubernetes on the Minions"
 salt -L $MINIONS cmd.run "curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -"
-salt -L $MINIONS cmd.run "apt-get update && apt-get install -y kubeadm"
+salt -L $MINIONS cmd.run "apt-get update && apt-get -o Dpkg::Options::="--force-confold" install -y kubeadm"
 echo ""
+
+echo "Step 16 - Updating Gru"
+sudo apt-get update && sudo apg-get upgrade -o Dpkg::Options::="--force-confold"
 
 # maikel echo "Step 16 - Initiating Kubernetes cluster on Gru"
 # maikel kubeadm init --pod-network-cidr=10.244.0.0/16
