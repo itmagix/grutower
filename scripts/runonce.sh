@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -f /tmp/.provisioningdone ] ; then
+if [ -f /home/pirate/.provisioningdone ] ; then
 echo "Provisioning already done, continuing normal login"
 exit
 fi
@@ -125,5 +125,8 @@ git clone -b runonce_script --single-branch https://github.com/itmagix/grutower.
 cd /home/pirate/grutower
 sudo ./scripts/provisioning.sh
 
+# Cleanup the shizzle
+rm -rf /home/pirate/grutower
+
 # Set already run file
-touch /tmp/.provisioningdone
+touch /home/pirate/.provisioningdone
