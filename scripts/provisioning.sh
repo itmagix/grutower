@@ -111,7 +111,7 @@ echo ""
 
 echo "Step 15 - Installing Kubernetes on the Minions"
 salt -L $MINIONS cmd.run "curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -"
-salt -L $MINIONS cmd.run "apt-get update && apt-get -o Dpkg::Options::="--force-confold" install -y kubeadm"
+salt -L $MINIONS cmd.run 'apt-get update && apt-get -o Dpkg::Options::="--force-confold" install -y kubeadm'
 echo ""
 
 echo "Step 16 - Updating Gru"
