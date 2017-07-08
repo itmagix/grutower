@@ -119,7 +119,7 @@ echo "ready!!!"
 echo ""
 
 # Getting sources
-git clone -b runonce_script --single-branch https://github.com/itmagix/grutower.git /home/pirate/grutower
+git clone -b master --single-branch https://github.com/itmagix/grutower.git /home/pirate/grutower
 
 # Running provisioning script
 cd /home/pirate/grutower
