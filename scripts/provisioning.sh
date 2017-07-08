@@ -1,7 +1,8 @@
 #!/bin/bash
 PASSWORD=`openssl rand -hex 12`
 MINIONS="minion1,minion2,minion3,minion4,minion5"
-SSHMINIONS="192.168.3.41 192.168.3.42 192.168.3.43 192.168.3.44 192.168.3.45"
+SSHMINIONS="192.168.3.41 192.168.3.42 192.168.3.43 192.168.3.44"
+SSHLASTMINION="192.168.3.45"
 CONFIGS="profiles,repos,system,minion"
 
 echo "Step 1 - Check for Root rights"
@@ -17,21 +18,27 @@ else
 fi
 
 echo "Step 2 - Copy Salt Repository to the minions"
-for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" scp -o "StrictHostKeyChecking no" ../gru_req/repos/saltstack.list pirate@$i:~ ; done
-for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i sudo mv saltstack.list /etc/apt/sources.list.d/ ; done
+for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" scp -o "StrictHostKeyChecking no" /home/pirate/grutower/gru_req/repos/saltstack.list pirate@$i:~ & done
+for i in $(echo $SSHLASTMINION) ; do sshpass -p "hypriot" scp -o "StrictHostKeyChecking no" /home/pirate/grutower/gru_req/repos/saltstack.list pirate@$i:~ ; done
+for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i sudo mv saltstack.list /etc/apt/sources.list.d/ & done
+for i in $(echo $SSHLASTMINION) ; do sshpass -p "hypriot" ssh pirate@$i sudo mv saltstack.list /etc/apt/sources.list.d/ ; done
 echo ""
 
 echo "Step 3 - Install Salt Minions"
-for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i "wget -O - https://repo.saltstack.com/apt/debian/8/armhf/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add - && sudo apt-get update && sudo apt-get install -y salt-minion" ; done
+for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i "wget -O - https://repo.saltstack.com/apt/debian/8/armhf/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add - && sudo apt-get update && sudo apt-get install -y salt-minion" & done
+for i in $(echo $SSHLASTMINION) ; do sshpass -p "hypriot" ssh pirate@$i "wget -O - https://repo.saltstack.com/apt/debian/8/armhf/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add - && sudo apt-get update && sudo apt-get install -y salt-minion" ; done
 echo ""
 
 echo "Step 4 - Copy initial Salt config file"
-for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" scp ../gru_req/configs/minion pirate@$i:~ ; done
-for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i sudo mv minion /etc/salt/ ; done
+for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" scp /home/pirate/grutower/gru_req/configs/minion pirate@$i:~ & done
+for i in $(echo $SSHLASTMINION) ; do sshpass -p "hypriot" scp /home/pirate/grutower/gru_req/configs/minion pirate@$i:~ ; done
+for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i sudo mv minion /etc/salt/ & done
+for i in $(echo $SSHLASTMINION) ; do sshpass -p "hypriot" ssh pirate@$i sudo mv minion /etc/salt/ ; done
 echo ""
 
 echo "Step 5 - Restart Salt minion process"
-for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i sudo systemctl restart salt-minion ; done
+for i in $(echo $SSHMINIONS) ; do sshpass -p "hypriot" ssh pirate@$i sudo systemctl restart salt-minion & done
+for i in $(echo $SSHLASTMINION) ; do sshpass -p "hypriot" ssh pirate@$i sudo systemctl restart salt-minion ; done
 echo ""
 
 echo "Step 6 - Sleep for 20 seconds"
@@ -71,7 +78,7 @@ salt -L $MINIONS cmd.run "timedatectl"
 echo ""
 
 echo "Step 11 - Updating Minions"
-salt -L $MINIONS cmd.run "apt-get update && apt-get -y upgrade"
+salt -L $MINIONS cmd.run 'apt-get update && apt-get -y -o Dpkg::Options::="--force-confold" upgrade'
 echo ""
 
 echo "Step 12 - Reboot Minions"
@@ -104,8 +111,11 @@ echo ""
 
 echo "Step 15 - Installing Kubernetes on the Minions"
 salt -L $MINIONS cmd.run "curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -"
-salt -L $MINIONS cmd.run "apt-get update && apt-get install -y kubeadm"
+salt -L $MINIONS cmd.run "apt-get update && apt-get -o Dpkg::Options::="--force-confold" install -y kubeadm"
 echo ""
+
+echo "Step 16 - Updating Gru"
+sudo apt-get update && sudo apt-get -y -o Dpkg::Options::="--force-confold" upgrade
 
 # maikel echo "Step 16 - Initiating Kubernetes cluster on Gru"
 # maikel kubeadm init --pod-network-cidr=10.244.0.0/16
