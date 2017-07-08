@@ -116,6 +116,7 @@ echo ""
 
 echo "Step 16 - Updating Gru"
 sudo apt-get update && sudo apt-get -y -o Dpkg::Options::="--force-confold" upgrade
+echo ""
 
 # maikel echo "Step 16 - Initiating Kubernetes cluster on Gru"
 # maikel kubeadm init --pod-network-cidr=10.244.0.0/16
