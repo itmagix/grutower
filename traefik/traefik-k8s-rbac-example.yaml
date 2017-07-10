@@ -32,7 +32,7 @@ spec:
       nodeSelector:
         nginx-controller: "traefik"
       containers:
-      - image: itmagix/grutower
+      - image: hypriot/rpi-traefik
         name: traefik-ingress-controller
         resources:
           limits:
