@@ -1,12 +1,12 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: hypriot
+  name: grutower
 spec:
   rules:
   - http:
       paths:
       - path: /
         backend:
-          serviceName: hypriot
+          serviceName: grutower
           servicePort: 80
